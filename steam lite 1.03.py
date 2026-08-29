@@ -570,7 +570,7 @@ def register_tenant(business_name: str, owner_name: str, email: str, e164_mobile
     try:
         existing_user = DatabaseAdapter.execute("SELECT id FROM users WHERE email = ?", (email.strip().lower(),), fetch="one")
         if existing_user:
-            return False, "An account with this email address already exists. Please sign in."
+            return False, "An account with this email address already exists. Please log in."
 
         t_id = DatabaseAdapter.execute("""
             INSERT INTO tenants (business_name, plan_tier, subscription_status, max_products, trial_ends_at)
@@ -600,7 +600,7 @@ def register_tenant(business_name: str, owner_name: str, email: str, e164_mobile
         for cat in cats:
             DatabaseAdapter.execute("INSERT INTO categories (tenant_id, name) VALUES (?, ?)", (t_id, cat))
 
-        return True, "Business tenant successfully created! Please sign in."
+        return True, "Business tenant successfully created! Please log in."
     except Exception as e:
         return False, f"Registration failed: {str(e)}"
 
@@ -1209,22 +1209,22 @@ if not st.session_state.authenticated:
         </div>
         """, unsafe_allow_html=True)
     with nav_col3:
-        if st.button("Sign In", use_container_width=True):
+        if st.button("Log In", use_container_width=True):
             st.session_state.auth_mode = "LOGIN"
     with nav_col4:
-        if st.button("Get Started", type="primary", use_container_width=True):
+        if st.button("Create new account", type="primary", use_container_width=True):
             st.session_state.auth_mode = "REGISTER"
 
     st.markdown("<hr style='margin: 8px 0 24px 0; border: none; border-top: 1px solid #E2E8F0;'/>", unsafe_allow_html=True)
 
     if st.session_state.auth_mode == "LOGIN":
         with st.container():
-            st.markdown("### 🔐 Sign In to Your Business Workspace")
+            st.markdown("### 🔐 Log In to Your Business Workspace")
             with st.form("modal_login_form"):
-                log_email = st.text_input("Work Email*", placeholder="owner@company.com")
+                log_email = st.text_input("Business Email/User ID*", placeholder="owner@company.com")
                 log_pass = st.text_input("Password*", type="password", placeholder="••••••••")
                 f_c1, f_c2 = st.columns(2)
-                if f_c1.form_submit_button("Sign In", type="primary", use_container_width=True):
+                if f_c1.form_submit_button("Log In", type="primary", use_container_width=True):
                     if not log_email or not log_pass:
                         notify("Please provide both email and password.", "error")
                     else:
@@ -1250,7 +1250,7 @@ if not st.session_state.authenticated:
             with st.form("modal_reg_form"):
                 r_biz = st.text_input("Business / Company Name*", placeholder="e.g. Apex Global Traders")
                 r_owner = st.text_input("Owner Full Name*", placeholder="e.g. John Doe")
-                r_email = st.text_input("Work Email*", placeholder="e.g. john@apexglobal.com")
+                r_email = st.text_input("Business Email/User ID*", placeholder="e.g. john@apexglobal.com")
 
                 r_c1, r_c2 = st.columns([1.2, 1.8])
                 selected_country = r_c1.selectbox("Country*", list(COUNTRY_CALLING_CODES.keys()), index=0)
@@ -1295,10 +1295,10 @@ if not st.session_state.authenticated:
         """, unsafe_allow_html=True)
 
         btn_c1, btn_c2 = st.columns([1, 1])
-        if btn_c1.button("Get Started", type="primary", use_container_width=True, key="hero_get_started"):
+        if btn_c1.button("Create new account", type="primary", use_container_width=True, key="hero_get_started"):
             st.session_state.auth_mode = "REGISTER"
             st.rerun()
-        if btn_c2.button("Sign In", use_container_width=True, key="hero_signin"):
+        if btn_c2.button("Log In", use_container_width=True, key="hero_signin"):
             st.session_state.auth_mode = "LOGIN"
             st.rerun()
 
@@ -1488,7 +1488,7 @@ if not st.session_state.authenticated:
                 <b>Product:</b> Products • Purchase • Sales • Inventory • Barcodes • Reports
             </div>
             <div style="font-size: 0.85rem; color: #475569;">
-                <b>Account:</b> Sign In • Register
+                <b>Account:</b> Log In • Register
             </div>
         </div>
         <div class="creator-box">
